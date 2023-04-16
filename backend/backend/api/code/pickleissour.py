@@ -26,7 +26,7 @@ auxilliary = ['am', 'is', 'are', 'was', 'were', 'be', 'being', 'been', 'will', '
 
 def getJoblibModelPred(review):
     print(review)
-    model=joblib.load(open('api/code/adabbbbbooooossst.pkl','rb'))
+    model=joblib.load(open('api/code/olt_finalllllllll.pkl','rb'))
     
     # pred =model.predict([["10.4","15.2","12","132","0","123","21","2","1","2","3"]])
     # print(pred[0])

@@ -40,23 +40,27 @@ def getImagePred(request):
     base64_string = str(request.data['image'])
     if not base64_string:
         return JsonResponse({'error': 'Image not provided'}, status=400)
-
-    image_bytes = base64.b64decode(base64_string.split(",")[1])
-
+    try:
+        image_bytes = base64.b64decode(base64_string.split(",")[1])
+    except:
+        return Response({"name":"Not good file/Not uploaded anything","conf":0.0})
 
     image = Image.open(BytesIO(image_bytes))
     image.save("output.png")
     res=model.predict(source='output.png',save=True,save_txt=True,save_conf=True)
-    with open("runs/detect/predict/labels/output.txt") as f:
-        #print(f.readline())
-        t=f.readline().split()
-        clas = t[0]
-        conf = t[5]
-        print(clas,conf)
-    names=['Adidas', 'Apple', 'BMW', 'Citroen', 'Cocacola', 'DHL', 'Fedex', 'Ferrari', 'Ford', 'Google', 'Heineken', 'HP', 'Intel', 'McDonalds', 'Mini', 'Nbc', 'Nike', 'Pepsi', 'Porsche', 'Puma', 'RedBull', 'Sprite', 'Starbucks', 'Texaco', 'Unicef', 'Vodafone', 'Yahoo']
-    restul = {"name" :names[int(clas)],"conf":conf}
-    print(type(res))
-    shutil.rmtree("runs/detect/predict")
+    try:
+        with open("runs/detect/predict/labels/output.txt") as f:
+            t=f.readline().split()
+            clas = t[0]
+            conf = t[5]
+            print(clas,conf)
+        names=['Adidas', 'Apple', 'BMW', 'Citroen', 'Cocacola', 'DHL', 'Fedex', 'Ferrari', 'Ford', 'Google', 'Heineken', 'HP', 'Intel', 'McDonalds', 'Mini', 'Nbc', 'Nike', 'Pepsi', 'Porsche', 'Puma', 'RedBull', 'Sprite', 'Starbucks', 'Texaco', 'Unicef', 'Vodafone', 'Yahoo']
+        restul = {"name" :names[int(clas)],"conf":conf}
+        print(type(res))
+        shutil.rmtree("runs/detect/predict")
+    except:
+        shutil.rmtree("runs/detect/predict")
+        return Response({"name":"No logo detected","conf":0.0})
     return Response(restul)
 
     # # return Response({'data' : base64_string})
